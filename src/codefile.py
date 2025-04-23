@@ -7,12 +7,10 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
 
     for old_node in old_nodes:
-        # If the node isn't a text node, we don't need to process it
         if old_node.text_type != TextType.TEXT:
             new_nodes.append(old_node)
             continue
         
-        # Split the text by the delimiter
         parts = old_node.text.split(delimiter)
         
         # If there's an even number of parts, that means we have unmatched delimiters
@@ -143,18 +141,17 @@ def generate_page(from_path, template_path, dest_path, basepath):
     with open(from_path) as file:
         md_content = file.read()
         print("Markdown content:", md_content)
-        md_file = markdown_to_html_node(md_content).to_html() # converts markdown to HTML
-        final = extract_title(md_content) # Extracts the title from the markdown file
+        md_file = markdown_to_html_node(md_content).to_html()
+        final = extract_title(md_content)
 
     with open(template_path) as file:
-        template = file.read() # extracts my template
+        template = file.read()
         new_template = template.replace('{{ Title }}', final).replace('{{ Content }}', md_file)
         new_template = new_template.replace('href="/', f'href="{basepath}')
         new_template = new_template.replace('src="/', f'src="{basepath}')
-
+        
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'w') as outfile:
-        #print("Generated template:", new_template)
         outfile.write(new_template)
 
 

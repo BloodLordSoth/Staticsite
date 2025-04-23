@@ -4,10 +4,9 @@ import shutil
 from codefile import generate_page
 
 def traverse_and_process(source, destination, template_path, basepath):
-    # Traverse through `source` directory
     for dirpath, _, filenames in os.walk(source):
         for filename in filenames:
-            if filename.endswith(".md"):  # Process Markdown files
+            if filename.endswith(".md"):
                 input_path = os.path.join(dirpath, filename)
                 rel_path = os.path.relpath(dirpath, source)
                 dest_dir = os.path.join(destination, rel_path)
@@ -17,10 +16,8 @@ def traverse_and_process(source, destination, template_path, basepath):
                 generate_page(input_path, template_path, dest_path, basepath)
 
 def main():
-    print(f"Examining... {sys.argv}")
     template_path = 'template.html'
     
-
     if len(sys.argv) > 1:
         basepath = sys.argv[1]
     else:

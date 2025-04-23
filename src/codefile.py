@@ -137,7 +137,7 @@ def extract_title(markdown):
             return result[2:]
     raise Exception ("No title found")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     from blocktype import markdown_to_html_node
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
     with open(from_path) as file:
@@ -149,6 +149,8 @@ def generate_page(from_path, template_path, dest_path):
     with open(template_path) as file:
         template = file.read() # extracts my template
         new_template = template.replace('{{ Title }}', final).replace('{{ Content }}', md_file)
+        new_template = new_template.replace('href="/', f'href="{basepath}')
+        new_template = new_template.replace('src="/', f'src="{basepath}')
 
     os.makedirs(os.path.dirname(dest_path), exist_ok=True)
     with open(dest_path, 'w') as outfile:

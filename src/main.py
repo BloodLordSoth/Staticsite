@@ -1,9 +1,9 @@
 import os
-import time
+import sys
 import shutil
 from codefile import generate_page
 
-def traverse_and_process(source, destination, template_path):
+def traverse_and_process(source, destination, template_path, basepath):
     # Traverse through `source` directory
     for dirpath, _, filenames in os.walk(source):
         for filename in filenames:
@@ -14,19 +14,26 @@ def traverse_and_process(source, destination, template_path):
                 os.makedirs(dest_dir, exist_ok=True)
 
                 dest_path = os.path.join(dest_dir, filename.replace('.md', '.html'))
-                generate_page(input_path, template_path, dest_path)
+                generate_page(input_path, template_path, dest_path, basepath)
 
 def main():
+    print(f"Examining... {sys.argv}")
     template_path = 'template.html'
     
-    if os.path.exists("public"):
-        shutil.rmtree('public')
-        print("Removing Existing public folder...")
+
+    if len(sys.argv) > 1:
+        basepath = sys.argv[1]
+    else:
+        basepath = '/'
+    
+    if os.path.exists("docs"):
+        shutil.rmtree('docs')
+        print("Removing Existing docs folder...")
         
-    os.makedirs('public', exist_ok=True)
-    print('Creating new public folder...')
-    copy_directory('static', 'public')
-    traverse_and_process('content', 'public', template_path)
+    os.makedirs('docs', exist_ok=True)
+    print('Creating new docs folder...')
+    copy_directory('static', 'docs')
+    traverse_and_process('content', 'docs', template_path, basepath)
         
 
 def copy_directory(source, destination):
